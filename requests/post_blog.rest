@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs
+content-type: application/json 
+
+{
+    "author": "Mentula",
+    "title": "Very big bull",
+    "url": "www.is.fi",
+    "likes": 0
+}
