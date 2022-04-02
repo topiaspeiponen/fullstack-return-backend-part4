@@ -2,7 +2,7 @@ POST http://localhost:3001/api/blogs
 content-type: application/json 
 
 {
-    "author": "Mentula",
+    "author": "Mentuasdfla",
     "title": "Very big bull",
     "url": "www.is.fi",
     "likes": 0
