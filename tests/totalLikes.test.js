@@ -52,16 +52,16 @@ describe('total likes', () => {
         }  
       ]
 
-    test('when list is empty', () => {
+    test('when list is empty for total likes', () => {
         const result = listHelper.totalLikes([])
         expect(result).toBe(0)
     })
-    test('when list has one blog', () => {
+    test('when list has one blog for total likes', () => {
         const oneBlogList = [blogs[0]]
         const result = listHelper.totalLikes(oneBlogList)
         expect(result).toBe(7)
     })
-    test('when list has 3 blogs', () => {
+    test('when list has 3 blogs for total likes', () => {
         const threeBlogList = blogs.slice(0,3)
         const result = listHelper.totalLikes(threeBlogList)
         expect(result).toBe(24)
