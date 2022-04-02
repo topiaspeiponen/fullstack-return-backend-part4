@@ -13,6 +13,5 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use('/api/blogs', blogsRouter)
-logger.info('Something happening ', blogsRouter)
 
 module.exports = app
