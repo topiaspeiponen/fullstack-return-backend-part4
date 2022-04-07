@@ -31,21 +31,35 @@ const mostBlogs = (blogs) => {
     if (blogs.length === 0) {
         return null
     }
-    const blogWriters = _.map(blogs, 'author')
-    const writerWithMostBlogsArray = _(blogWriters)
+    const blogAuthors = _.map(blogs, 'author')
+    const authorWithMostBlogsArray = _(blogAuthors)
     .countBy()
     .entries()
     .maxBy(_.last)
     const writerObject = {
-        author: writerWithMostBlogsArray[0],
-        blogs: writerWithMostBlogsArray[1]
+        author: authorWithMostBlogsArray[0],
+        blogs: authorWithMostBlogsArray[1]
     }
     return writerObject
+}
+
+const mostLikes = (blogs) => {
+    if (blogs.length === 0) {
+        return null
+    }
+    const blogAuthors = _.map(blogs, blog => { 
+        return {author: blog.author, likes: blog.likes}
+    })
+    const mergedBlogsByAuthor = _.keyBy(blogAuthors, 'author')
+    console.log('blog authors ', blogAuthors)
+    console.log('merged authors ', mergedBlogsByAuthor)
+    return blogAuthors
 }
 
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
