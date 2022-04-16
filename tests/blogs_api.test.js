@@ -48,16 +48,29 @@ test('blogs have id field', async () => {
 })
 
 test('add new blog', async () => {
-  await api.post('/api/blogs', 
-    {
+  await api.post('/api/blogs')
+    .send({
       title: "Cannon to Fish",
       author: "Testi Djikstra",
       url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
       likes: 3
-    }
-  )
+    })
   const responseGet = await api.get('/api/blogs')
   expect(responseGet.body).toHaveLength(initialBlogs.length + 1)
+})
+
+test('blog likes are set to 0 when undefined', async () => {
+  await api.post('/api/blogs')
+    .send({
+      title: "Cannon to Fish",
+      author: "Testi Djikstra",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: null
+    })
+  const responseGet = await api.get('/api/blogs')
+  console.log('huutista ', responseGet.body)
+  const lastBlog = responseGet.body.pop()
+  expect(lastBlog.likes).toBe(0)
 })
   
 afterAll(() => {
