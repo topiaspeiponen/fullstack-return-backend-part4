@@ -50,7 +50,7 @@ const mostLikes = (blogs) => {
     const blogAuthors = _.map(blogs, blog => { 
         return {author: blog.author, likes: blog.likes}
     })
-    const mergedBlogsByAuthor = _.keyBy(blogAuthors, 'author')
+    const mergedBlogsByAuthor = _.merge(_.keyBy(blogAuthors, 'author'))
     console.log('blog authors ', blogAuthors)
     console.log('merged authors ', mergedBlogsByAuthor)
     return blogAuthors
