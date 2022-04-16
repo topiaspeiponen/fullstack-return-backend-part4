@@ -69,7 +69,7 @@ test('blog likes are set to 0 when undefined', async () => {
     })
   const responseGet = await api.get('/api/blogs')
   console.log('huutista ', responseGet.body)
-  const lastBlog = responseGet.body.pop()
+  const lastBlog = responseGet.body[responseGet.body.length - 1]
   expect(lastBlog.likes).toBe(0)
 })
   
