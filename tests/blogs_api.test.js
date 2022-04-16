@@ -39,7 +39,7 @@ test('blogs are returned as proper length json', async () => {
     const response = await api.get('/api/blogs')
         .expect(200)
         .expect('Content-Type', /application\/json/)
-
+    console.log('response ', response)
     expect(response.body).toHaveLength(initialBlogs.length)
   })
   
