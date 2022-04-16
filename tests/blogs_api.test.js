@@ -46,6 +46,19 @@ test('blogs have id field', async () => {
   const response = await api.get('/api/blogs')
   response.body.map((blog) => expect(blog.hasOwnProperty('id')).toBeDefined())
 })
+
+test('add new blog', async () => {
+  await api.post('/api/blogs', 
+    {
+      title: "Cannon to Fish",
+      author: "Testi Djikstra",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 3
+    }
+  )
+  const responseGet = await api.get('/api/blogs')
+  expect(responseGet.body).toHaveLength(initialBlogs.length + 1)
+})
   
 afterAll(() => {
     mongoose.connection.close()
