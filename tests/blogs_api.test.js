@@ -37,11 +37,15 @@ beforeEach(async () => {
 
 test('blogs are returned as proper length json', async () => {
     const response = await api.get('/api/blogs')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-    console.log('response ', response)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
     expect(response.body).toHaveLength(initialBlogs.length)
   })
+
+test('blogs have id field', async () => {
+  const response = await api.get('/api/blogs')
+  response.body.map((blog) => expect(blog.hasOwnProperty('id')).toBeDefined())
+})
   
 afterAll(() => {
     mongoose.connection.close()
