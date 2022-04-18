@@ -8,18 +8,47 @@ blogsRouter.get("/", async (request, response) => {
 });
 
 blogsRouter.post("/", async (request, response) => {
-  if (!request.body.likes) {
+  const blog = {
+    title: request.body.title,
+    author: request.body.author,
+    url: request.body.url,
+    likes: request.body.likes
+  }
+
+  if (!blog.likes) {
     const modifiedBlog = new Blog({
-      ...request.body,
+      ...blog,
       likes: 0
     });
     const modifiedBlogResult = await modifiedBlog.save()
     response.status(201).json(modifiedBlogResult);
   } else {
-    const blog = new Blog(request.body);
-    const result = await blog.save()
+    const blogModel = new Blog(blog);
+    const result = await blogModel.save()
     response.status(201).json(result);
   }
 });
+
+blogsRouter.put("/:id", async (request, response) => {
+  const blog = {
+    title: request.body.title,
+    author: request.body.author,
+    url: request.body.url,
+    likes: request.body.likes
+  }
+
+  const result = await Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
+  console.log('put result ', result)
+  response.status(201).json(result);
+})
+
+blogsRouter.delete("/:id", async (request, response) => {
+  const deleteResponse = await Blog.deleteOne({_id: request.params.id})
+  if (deleteResponse.deletedCount === 0) {
+    response.status(404).end()
+  } else {
+    response.status(204).end()
+  }
+})
 
 module.exports = blogsRouter;
