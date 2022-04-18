@@ -8,11 +8,24 @@ const User = require('../models/user')
 const helper = require('../utils/list_helper')
 
 
-describe('when there is initially some blogs saved', () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlogs)
+beforeEach(async () => {
+  await User.deleteMany({})
+  await Blog.deleteMany({})
+  
+  await User.insertMany(helper.initialUsers)
+  const addedUsers = await User.find({})
+
+  const blogsWithUserIDs = helper.initialBlogs.map(blog => {
+    const blogWithUserID = {
+      ... blog,
+      user: addedUsers[0]._id
+    }
+    return blogWithUserID
   })
+  await Blog.insertMany(blogsWithUserIDs)
+})
+
+describe('when there is initially some blogs saved', () => {
 
   test('blogs are returned as proper length json', async () => {
       const response = await api.get('/api/blogs')
@@ -117,10 +130,7 @@ describe('when there is initially some blogs saved', () => {
 })
 
 describe('when there is initially users created', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
-    await User.insertMany(helper.initialUsers)
-  })
+
 
   describe('addition of a new user', () => {
     
