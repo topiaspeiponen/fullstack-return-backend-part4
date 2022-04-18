@@ -4,6 +4,7 @@ const { put } = require('../app')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('../utils/list_helper')
 
 
@@ -112,6 +113,78 @@ describe('when there is initially some blogs saved', () => {
       await api.delete('/api/blogs/3431' )
         .expect(500)
     })
+  })
+})
+
+describe('when there is initially users created', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+    await User.insertMany(helper.initialUsers)
+  })
+
+  describe('addition of a new user', () => {
+    
+    test('add a new user', async () => {
+      await api.post('/api/users')
+        .send({
+          username: "Ruuvimeisseli54",
+          name: "Iso keke",
+          password: "4533"
+      })
+      const responseGet = await api.get('/api/users')
+      expect(responseGet.body).toHaveLength(helper.initialUsers.length + 1)
+    })
+
+    test('adding user with non-unique username', async () => {
+      await api.post('/api/users')
+        .send({
+          username: helper.initialUsers[0].username,
+          name: "Iso keke",
+          password: "4533"
+        })
+        .expect(400)
+    })
+
+    test('adding user with short username', async () => {
+      await api.post('/api/users')
+        .send({
+          username: "Ke",
+          name: "Iso keke",
+          password: "4533"
+        })
+        .expect(400)
+    })
+
+    test('adding user with empty username', async () => {
+      await api.post('/api/users')
+        .send({
+          username: "",
+          name: "Iso keke",
+          password: "4533"
+        })
+        .expect(400)
+    })
+
+    test('adding user with short password', async () => {
+      await api.post('/api/users')
+        .send({
+          username: "Keketon",
+          name: "Iso keke",
+          password: "32"
+        })
+        .expect(400)
+    })
+
+    test('adding user with empty password', async () => {
+      await api.post('/api/users')
+        .send({
+          username: "Ke",
+          name: "Iso keke",
+          password: ""
+        })
+        .expect(400)
+    })
+
   })
 })
   

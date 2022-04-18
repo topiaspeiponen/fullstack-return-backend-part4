@@ -21,6 +21,24 @@ const initialBlogs = [
     }
   ];
 
+const initialUsers = [
+    {
+        username: "maketonninen",
+        name: "Iso Make",
+        password: "1234"
+    },
+    {
+        username: "eioomake",
+        name: "Pieni Make",
+        password: "4321"
+    },
+    {
+        username: "ankka",
+        name: "Keskikokoinen Ankka",
+        password: "0000"
+    },
+]
+
 const dummy = (blogs) => {
   return 1;
 }
@@ -79,6 +97,7 @@ const mostLikes = (blogs) => {
 
 module.exports = {
   initialBlogs,
+  initialUsers,
   dummy,
   totalLikes,
   favoriteBlog,
