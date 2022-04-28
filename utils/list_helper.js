@@ -25,17 +25,20 @@ const initialUsers = [
     {
         username: "maketonninen",
         name: "Iso Make",
-        password: "1234"
+        password: "1234",
+        blogs: []
     },
     {
         username: "eioomake",
         name: "Pieni Make",
-        password: "4321"
+        password: "4321",
+        blogs: []
     },
     {
         username: "ankka",
         name: "Keskikokoinen Ankka",
-        password: "0000"
+        password: "0000",
+        blogs: []
     },
 ]
 

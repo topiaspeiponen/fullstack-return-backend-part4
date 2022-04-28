@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const { put } = require('../app')
+const bcrypt = require('bcrypt')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
@@ -11,8 +11,20 @@ const helper = require('../utils/list_helper')
 beforeEach(async () => {
   await User.deleteMany({})
   await Blog.deleteMany({})
+
+  const usersWithHashedPass = await Promise.all(helper.initialUsers.map(async (user) => {
+    
+    const saltRounds = 5
+    const passwordHash = await bcrypt.hash(user.password, saltRounds)
+
+    return {
+      ...user,
+      passwordHash: passwordHash
+    }
+  })
+  )
   
-  await User.insertMany(helper.initialUsers)
+  await User.insertMany(usersWithHashedPass)
   const addedUsers = await User.find({})
 
   const blogsWithUserIDs = helper.initialBlogs.map(blog => {
@@ -25,10 +37,23 @@ beforeEach(async () => {
   await Blog.insertMany(blogsWithUserIDs)
 })
 
+
 describe('when there is initially some blogs saved', () => {
+  let token = ''
+
+  beforeEach(async () => {
+    const response = await api.post('/api/login')
+      .send({
+        username: 'maketonninen',
+        password: '1234'
+      })
+      console.log('token ', response.body)
+      token = response.body.token
+  })
 
   test('blogs are returned as proper length json', async () => {
       const response = await api.get('/api/blogs')
+        .set('authorization', `bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /application\/json/)
       expect(response.body).toHaveLength(helper.initialBlogs.length)
@@ -36,6 +61,7 @@ describe('when there is initially some blogs saved', () => {
 
   test('blogs have id field', async () => {
     const response = await api.get('/api/blogs')
+      .set('authorization', `bearer ${token}`)
     response.body.map((blog) => expect(blog.hasOwnProperty('id')).toBeDefined())
   })
 
@@ -43,6 +69,7 @@ describe('when there is initially some blogs saved', () => {
 
     test('add new blog', async () => {
       await api.post('/api/blogs')
+        .set('authorization', `bearer ${token}`)
         .send({
           title: "Cannon to Fish",
           author: "Testi Djikstra",
@@ -50,11 +77,24 @@ describe('when there is initially some blogs saved', () => {
           likes: 3
         })
       const responseGet = await api.get('/api/blogs')
+        .set('authorization', `bearer ${token}`)
       expect(responseGet.body).toHaveLength(helper.initialBlogs.length + 1)
+    })
+
+    test('add new blog with no token', async () => {
+      await api.post('/api/blogs')
+        .send({
+          title: "Cannon to Fish",
+          author: "Testi Djikstra",
+          url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+          likes: 3
+        })
+        .expect(401)
     })
 
     test('new blog likes are set to 0 when undefined', async () => {
       await api.post('/api/blogs')
+        .set('authorization', `bearer ${token}`)
         .send({
           title: "Cannon to Fish",
           author: "Testi Djikstra",
@@ -62,12 +102,14 @@ describe('when there is initially some blogs saved', () => {
           likes: null
         })
       const responseGet = await api.get('/api/blogs')
+        .set('authorization', `bearer ${token}`)
       const lastBlog = responseGet.body[responseGet.body.length - 1]
       expect(lastBlog.likes).toBe(0)
     })
 
     test('new blog post fails with no title field', async() => {
       await api.post('/api/blogs')
+        .set('authorization', `bearer ${token}`)
         .send({
           url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
           author: "Testi Djikstra",
@@ -78,6 +120,7 @@ describe('when there is initially some blogs saved', () => {
 
     test('new blog post fails with no url field', async () => {
       await api.post('/api/blogs')
+        .set('authorization', `bearer ${token}`)
         .send({
           title: "Cannon to Fish",
           author: "Testi Djikstra",
@@ -97,7 +140,9 @@ describe('when there is initially some blogs saved', () => {
       }
 
       const blogsResponse = await api.get('/api/blogs')
+        .set('authorization', `bearer ${token}`)
       const putResponse = await api.put('/api/blogs/' + blogsResponse.body[0].id)
+        .set('authorization', `bearer ${token}`)
         .send(editedBlog)
       expect(putResponse.body).toMatchObject(editedBlog)
     })
@@ -118,12 +163,15 @@ describe('when there is initially some blogs saved', () => {
   describe('deletion of a blog', () => {
     test('delete a blog', async () => {
       const blogsResponse = await api.get('/api/blogs')
+        .set('authorization', `bearer ${token}`)
       await api.delete('/api/blogs/' + blogsResponse.body[0].id)
+        .set('authorization', `bearer ${token}`)
         .expect(204)
     })
 
     test('deleting blog with invalid id', async () => {
       await api.delete('/api/blogs/3431' )
+        .set('authorization', `bearer ${token}`)
         .expect(500)
     })
   })
