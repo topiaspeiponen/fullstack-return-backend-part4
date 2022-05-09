@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog');
 const User = require('../models/user');
 const logger = require('../utils/logger')
+const userExtractor = require('../utils/userExtractor')
 
 
 
@@ -11,7 +12,7 @@ blogsRouter.get("/", async (request, response) => {
   response.json(blogs)
 });
 
-blogsRouter.post("/", async (request, response) => {
+blogsRouter.post("/", userExtractor, async (request, response) => {
   const user = request.user
 
   const blog = {
@@ -40,7 +41,7 @@ blogsRouter.post("/", async (request, response) => {
   }
 });
 
-blogsRouter.put("/:id", async (request, response) => {
+blogsRouter.put("/:id", userExtractor, async (request, response) => {
   const blog = {
     title: request.body.title,
     author: request.body.author,
@@ -53,7 +54,7 @@ blogsRouter.put("/:id", async (request, response) => {
   response.status(201).json(result);
 })
 
-blogsRouter.delete("/:id", async (request, response) => {
+blogsRouter.delete("/:id", userExtractor, async (request, response) => {
   const blogToDelete = await Blog.findById(request.params.id)
 
   if (blogToDelete && blogToDelete.user.toString() === request.user.id.toString()) {
