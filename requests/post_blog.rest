@@ -1,6 +1,6 @@
 POST http://localhost:3000/api/blogs
 Content-type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlYXNkZiIsImlkIjoiNjI1ZDkxYThjYzc0YmQzNTczNGY2YmM3IiwiaWF0IjoxNjUwODEwMDA4fQ.3kXZLrlXUdFvHM2JitxkxKT-Fp8nPCoQb9z3Y3qVSno
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RhYWphIiwiaWQiOiI2MjdhYWE5ODgwMTNmYzg5NjAyNDU1ZGIiLCJpYXQiOjE2NTIyMDY3Mjl9.1MaAfhyHGd68YHqQP9Qay8FUE_cO2Nvkskl4hS_93NM
 
 {
     "author": "Huutistelija",

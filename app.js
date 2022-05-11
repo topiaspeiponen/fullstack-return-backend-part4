@@ -1,5 +1,6 @@
 const cors = require('cors')
 const express = require('express')
+require('dotenv').config();
 require('express-async-errors')
 const mongoose = require('mongoose')
 const blogsRouter = require('./controllers/blogs')
@@ -21,6 +22,12 @@ app.use(tokenExtractor)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+
+if (process.env.NODE_ENV === 'test') {
+    const testRouter = require('./controllers/testing')
+    app.use('/api/testing', testRouter)
+}
+
 app.use(errorHandler)
 
 module.exports = app
